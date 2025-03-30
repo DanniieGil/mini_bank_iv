@@ -1,5 +1,7 @@
 # Mini Bank
 
+Este es un ejercicio académico desarrollado para la materia de Modelos de Programación I del programa de Ingeniería de Sistemas de la Fundación Universitaria del Área Andina.
+
 Una aplicación web bancaria simple desarrollada con Ruby on Rails y diseñada con Tailwind CSS.
 
 ## Características
