@@ -1,0 +1,83 @@
+<div class="bg-white shadow overflow-hidden sm:rounded-lg">
+  <div class="px-4 py-5 sm:px-6 flex justify-between items-center">
+    <h3 class="text-lg leading-6 font-medium text-gray-900">Usuarios del Sistema</h3>
+    <%= link_to 'Nuevo Usuario', new_user_banking_index_path, class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+  </div>
+
+  <div class="border-t border-gray-200">
+    <ul class="divide-y divide-gray-200">
+      <% @users.each do |user| %>
+        <li class="px-4 py-4 sm:px-6">
+          <div class="flex items-center justify-between">
+            <div class="text-sm font-medium text-blue-600 truncate">
+              <%= user.show_information %>
+            </div>
+            <div class="ml-2 flex-shrink-0 flex">
+              <% if user.is_a?(Client) %>
+                <%= link_to 'Nueva Cuenta', new_account_banking_index_path(client_id: user.id), class: "mr-2 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" %>
+                <%= link_to 'Ver Cuentas', show_accounts_banking_index_path(client_id: user.id), class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+              <% elsif user.is_a?(Employee) %>
+                <button onclick="openBonusModal(<%= user.id %>)" class="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded">
+                  Calcular Bono
+                </button>
+              <% end %>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div>
+
+<!-- Modal para calcular bono -->
+<div id="bonusModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 hidden flex items-center justify-center">
+  <div class="bg-white rounded-lg p-8 max-w-sm w-full mx-4">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-medium text-gray-900">Calcular Bono</h3>
+      <button onclick="closeBonusModal()" class="text-gray-400 hover:text-gray-500">
+        <span class="sr-only">Cerrar</span>
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+    <%= form_tag calculate_bonus_banking_index_path, method: :get, class: "space-y-6", id: "bonusForm" do %>
+      <%= hidden_field_tag :employee_id, "", id: "modalEmployeeId" %>
+      <div>
+        <%= label_tag :percentage, "Porcentaje del Bono", class: "block text-sm font-medium text-gray-700" %>
+        <div class="mt-1 relative rounded-md shadow-sm">
+          <%= number_field_tag :percentage, nil,
+              step: "0.01",
+              required: true,
+              class: "block w-full pr-10 sm:text-sm border-gray-300 rounded-md focus:ring-yellow-500 focus:border-yellow-500",
+              placeholder: "Ingrese el porcentaje" %>
+          <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+            <span class="text-gray-500 sm:text-sm">%</span>
+          </div>
+        </div>
+      </div>
+      <div class="mt-5 sm:mt-6">
+        <%= submit_tag "Calcular",
+            class: "w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-yellow-600 text-base font-medium text-white hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:text-sm" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  function openBonusModal(employeeId) {
+    document.getElementById('modalEmployeeId').value = employeeId;
+    document.getElementById('bonusModal').classList.remove('hidden');
+  }
+
+  function closeBonusModal() {
+    document.getElementById('bonusModal').classList.add('hidden');
+  }
+
+  // Cerrar modal al hacer clic fuera de él
+  document.getElementById('bonusModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closeBonusModal();
+    }
+  });
+</script>

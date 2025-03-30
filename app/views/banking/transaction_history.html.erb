@@ -1,0 +1,50 @@
+<div class="bg-white shadow overflow-hidden sm:rounded-lg">
+  <div class="px-4 py-5 sm:px-6">
+    <div class="flex justify-between items-center">
+      <div>
+        <h3 class="text-lg leading-6 font-medium text-gray-900">Historial de Transacciones</h3>
+        <p class="mt-1 max-w-2xl text-sm text-gray-500">
+          Cuenta: <%= @account.show_details %>
+        </p>
+      </div>
+      <%= link_to 'Nueva Transacción', new_transaction_banking_index_path(account_id: @account.id), class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+    </div>
+  </div>
+
+  <div class="border-t border-gray-200">
+    <ul class="divide-y divide-gray-200">
+      <% @transactions.each do |transaction| %>
+        <li class="px-4 py-4 sm:px-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <% if transaction.transaction_type == "deposit" %>
+                  <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                  </svg>
+                <% else %>
+                  <svg class="h-6 w-6 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/>
+                  </svg>
+                <% end %>
+              </div>
+              <div class="ml-4">
+                <p class="text-sm font-medium text-gray-900">
+                  <%= transaction.transaction_type == "deposit" ? "Depósito" : "Retiro" %>
+                </p>
+                <p class="text-sm text-gray-500">
+                  <%= transaction.created_at.strftime("%d/%m/%Y %H:%M") %>
+                </p>
+              </div>
+            </div>
+            <div class="ml-4">
+              <p class="text-sm font-medium <%= transaction.transaction_type == "deposit" ? "text-green-600" : "text-red-600" %>">
+                <%= transaction.transaction_type == "deposit" ? "+" : "-" %>$<%= transaction.amount %>
+              </p>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ul>
+  </div>
+</div> 
